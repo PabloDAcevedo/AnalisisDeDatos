@@ -5,7 +5,6 @@ import platform
 from desafio1 import (
     ProductosDeAlmacen,
     ProductosBebidas,
-    ProductosGalletitas,
     GestionProductos,
 )
 
@@ -22,7 +21,12 @@ def mostrar_menu():
     print("==================================================")
     print('1. Agregar Producto Nuevo de Almacen')
     print('2. Agregar Producto Nuevo de Bebidas')
-    print('3. Buscar un producto')
+    print('3. Buscar existencia de un producto')
+    print('4. Actualizar precio de un producto')
+    print('5. Actualizar el stock de un producto')
+    print('6. Eliminar producto')
+    print('7. Mostrar todos los productos')
+    print('0. Salir')
     print('')
 
 def nuevo_producto(gestion, tipo_producto):
@@ -60,14 +64,35 @@ def buscar_producto(gestion):
     input('Presione Enter para continuar...')
 
 
-def actualizar_salario_colaborador(gestion):
-    pass
+def actualizar_precio(gestion):
+    idProducto = input('Ingrese el ID del producto a actualizar: ')
+    precio = float(input('Ingrese el precio nuevo: '))
+    gestion.actualizar_precio(idProducto, precio)
+    input('Presione Enter para continuar...')
+    
 
-def eliminar_colaborador_por_dni(gestion):
-    pass
+def actualizar_stock(gestion):
+    idProducto = input('Ingrese el ID del producto a actualizar: ')
+    cantidadStock = int(input('Ingrese la cantidad en stock actualizada: '))
+    gestion.actualizar_inventario(idProducto, cantidadStock)
+    input('Presione Enter para continuar...')
+    
 
-def mostrar_todos_los_colaboradores(gestion):
-    pass
+def eliminar_producto(gestion):
+    idProducto = input('Ingrese el ID del producto a eliminar: ')
+    gestion.eliminar_inventario(idProducto)
+    input('Presione Enter para continuar...')
+
+def mostrar_todos_los_producto(gestion):
+    print('Listado de los colaboradores: \n')
+    for producto in gestion.leer_producto().values():
+        if 'nombre' in producto:
+            print(f"{producto['nombre']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
+        else:
+            print(f"{producto['tipoDeBebida']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
+    
+    input('Presione Enter para continuar...')
+        
 
 
 if __name__ == '__main__':
@@ -87,5 +112,23 @@ if __name__ == '__main__':
         elif opcion == '3':
             buscar_producto(gestion_productos)
             
+        elif opcion == '4':
+            actualizar_precio(gestion_productos)
+        
+        elif opcion == '5':
+            ''' BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo '''
+            actualizar_stock(gestion_productos)
+            
+        elif opcion == '6':
+            eliminar_producto(gestion_productos)
+            
+        elif opcion == '7':
+            ''' BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo '''
+            mostrar_todos_los_producto(gestion_productos)
+            
+        elif opcion == '0':
+            print('Saliendo del programa...')
+            break
+        
         else:
-            print('Opción no válida')
+            print('Opción no válida. Por favor elija una de las opciones brindadas.')

@@ -119,9 +119,6 @@ class ProductosBebidas(Producto):
     def __str__(self):
         return f"{super().__str__()} {self.tipoDeBebida}"
     
-    
-class ProductosGalletitas():
-    pass
 
 
 
@@ -170,6 +167,43 @@ class GestionProductos:
             print(f'Error inesperado: {error}')
             
             
+    def actualizar_precio(self, idProducto, precio):
+        try:
+            datos = self.leer_inventario()
+            if str(idProducto) in datos.keys():
+                datos[idProducto]['precio'] = precio
+                self.actualizar_inventario(datos)
+                print(f'Precio actualizado correctamente')
+            else:
+                print(f'Producto no encontrado')
+                
+        except IOError as error:
+            print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
+            
+        except Exception as error:
+            print(f'Error inesperado: {error}')
+            
+
+    '''
+    BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo
+    
+    def actualizar_inventario(self, idProducto, cantidadStock):
+        try:
+            datos = self.leer_inventario()
+            if str(idProducto) in datos.keys():
+                datos[idProducto]['cantidadStock'] = cantidadStock
+                self.actualizar_inventario(datos)
+                print(f'Stock actualizado correctamente')
+            else:
+                print(f'Producto no encontrado')
+                
+        except IOError as error:
+            print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
+            
+        except Exception as error:
+            print(f'Error inesperado: {error}')
+
+    '''
     def nuevo_producto(self, producto):
         try:
             datos = self.leer_inventario()
@@ -183,3 +217,20 @@ class GestionProductos:
             
         except Exception as error:
             print(f'Error inesperado al crear colaborador: {error}')
+            
+            
+    def eliminar_producto(self, idProducto):
+        try:
+            datos = self.leer_inventario()
+            if str(idProducto) in datos.keys():
+                del datos[idProducto]
+                self.actualizar_inventario(datos)
+                print(f'Producto eliminado correctamente.')
+            else:
+                print(f'Producto no encontrado')
+                
+        except IOError as error:
+            print(f'Error al intentar eliminar los datos en {self.archivo}: {error}')
+            
+        except Exception as error:
+            print(f'Error inesperado: {error}')

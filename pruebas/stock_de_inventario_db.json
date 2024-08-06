@@ -27,7 +27,7 @@
         "idProducto": 51,
         "marca": "Coca-cola",
         "volumen": "1,5lt",
-        "precio": 51,
+        "precio": 678.0,
         "cantidadStock": 33,
         "nombre": "Gaseosa"
     },
