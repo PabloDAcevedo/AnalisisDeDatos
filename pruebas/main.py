@@ -94,7 +94,7 @@ def eliminar_producto(gestion):
 
 def mostrar_todos_los_producto(gestion):
     print('Listado de los colaboradores: \n')
-    for producto in gestion.leer_producto().values():
+    for producto in gestion.leer_inventario().values():
         if 'nombre' in producto:
             print(f"{producto['nombre']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
         else:
@@ -132,7 +132,6 @@ if __name__ == '__main__':
             eliminar_producto(gestion_productos)
             
         elif opcion == '7':
-            ''' BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo '''
             mostrar_todos_los_producto(gestion_productos)
             
         elif opcion == '0':
