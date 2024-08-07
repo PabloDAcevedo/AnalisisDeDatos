@@ -59,7 +59,7 @@ def nuevo_producto(gestion, tipo_producto):
 
 
 def buscar_producto(gestion):
-    idProducto = input('Ingrese el ID del producto que desea buscar: ')
+    idProducto = input('\nIngrese el ID del producto que desea buscar: ')
     gestion.leer_producto(idProducto)
     input('Presione Enter para continuar...')
 
@@ -93,13 +93,15 @@ def eliminar_producto(gestion):
     input('Presione Enter para continuar...')
 
 def mostrar_todos_los_producto(gestion):
-    print('Listado de los colaboradores: \n')
+    print('-----------------------------------------------------------------------------------------')
+    print('|                              Listado de los Productos:                                |')
+    print('-----------------------------------------------------------------------------------------')
     for producto in gestion.leer_inventario().values():
         if 'nombre' in producto:
-            print(f"{producto['nombre']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
+            print(f"|| {producto['nombre']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
         else:
-            print(f"{producto['tipoDeBebida']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
-    
+            print(f"|| {producto['tipoDeBebida']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
+    print('-----------------------------------------------------------------------------------------\n')
     input('Presione Enter para continuar...')
         
 

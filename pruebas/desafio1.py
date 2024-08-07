@@ -146,9 +146,10 @@ class GestionProductos:
                 producto_data = datos[idProducto]
                 if 'nombre' in producto_data:
                     producto = ProductosDeAlmacen(**producto_data)
+                    print(f"\nID encontrado. - {producto_data['nombre']} - Marca: {producto_data['marca']} - Cantidad: {producto_data['cantidadStock']} unidades\n")
                 else:
                     producto = ProductosBebidas(**producto_data)
-                print(f'Producto encontrado {idProducto}')
+                    print(f"\nID encontrado. - {producto_data['tipoDeBebida']} - Marca: {producto_data['marca']} - Cantidad: {producto_data['cantidadStock']} unidades\n")
             else:
                 print(f'Producto no encontrado...')
                 
