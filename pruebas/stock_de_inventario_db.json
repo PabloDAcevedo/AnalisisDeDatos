@@ -46,5 +46,21 @@
         "precio": 2,
         "cantidadStock": 3,
         "nombre": "Aceite"
+    },
+    "24": {
+        "idProducto": 24,
+        "marca": "Ferner vittone",
+        "volumen": "750ml",
+        "precio": 2100.0,
+        "cantidadStock": 5,
+        "nombre": "Ferne"
+    },
+    "25": {
+        "idProducto": 25,
+        "marca": "Fanta",
+        "volumen": "2250ml",
+        "precio": 25,
+        "cantidadStock": 4,
+        "tipoDeBebida": "Gaseosa"
     }
 }

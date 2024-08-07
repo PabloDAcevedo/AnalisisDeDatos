@@ -184,9 +184,8 @@ class GestionProductos:
             print(f'Error inesperado: {error}')
             
 
+
     '''
-    BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo
-    
     def actualizar_inventario(self, idProducto, cantidadStock):
         try:
             datos = self.leer_inventario()
@@ -202,8 +201,8 @@ class GestionProductos:
             
         except Exception as error:
             print(f'Error inesperado: {error}')
-
     '''
+    
     def nuevo_producto(self, producto):
         try:
             datos = self.leer_inventario()

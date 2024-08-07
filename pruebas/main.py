@@ -64,23 +64,32 @@ def buscar_producto(gestion):
     input('Presione Enter para continuar...')
 
 
-def actualizar_precio(gestion):
-    idProducto = input('Ingrese el ID del producto a actualizar: ')
-    precio = float(input('Ingrese el precio nuevo: '))
-    gestion.actualizar_precio(idProducto, precio)
-    input('Presione Enter para continuar...')
+def actualizar_producto(gestion, tipo_producto):
     
-
-def actualizar_stock(gestion):
-    idProducto = input('Ingrese el ID del producto a actualizar: ')
-    cantidadStock = int(input('Ingrese la cantidad en stock actualizada: '))
-    gestion.actualizar_inventario(idProducto, cantidadStock)
-    input('Presione Enter para continuar...')
+    try:
+        idProducto = input('Ingrese el ID del producto a actualizar: ')
+        
+        if tipo_producto == '4':
+            precio = float(input('Ingrese el precio nuevo: '))
+            gestion.actualizar_precio(idProducto, precio)
+            input('Presione Enter para continuar...')
+        elif tipo_producto == '5':
+            cantidadStock = int(input('Ingrese la cantidad en stock actualizada: '))
+            gestion.actualizar_inventario(idProducto, cantidadStock)
+            input('Presione Enter para continuar...')
+        else:
+            print('Opción inválida...')
+            return
+    
+    except ValueError as error:
+            print(f'Error: {error}')
+    except Exception as error:
+            print(f'Error inesperado: {error}')
     
 
 def eliminar_producto(gestion):
     idProducto = input('Ingrese el ID del producto a eliminar: ')
-    gestion.eliminar_inventario(idProducto)
+    gestion.eliminar_producto(idProducto)
     input('Presione Enter para continuar...')
 
 def mostrar_todos_los_producto(gestion):
@@ -113,11 +122,11 @@ if __name__ == '__main__':
             buscar_producto(gestion_productos)
             
         elif opcion == '4':
-            actualizar_precio(gestion_productos)
+            actualizar_producto(gestion_productos, opcion)
         
         elif opcion == '5':
             ''' BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo '''
-            actualizar_stock(gestion_productos)
+            actualizar_producto(gestion_productos, opcion)
             
         elif opcion == '6':
             eliminar_producto(gestion_productos)
