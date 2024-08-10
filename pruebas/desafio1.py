@@ -48,7 +48,7 @@ class Producto:
 
 
     @idProducto.setter
-    def precio(self, nuevo_producto):
+    def idProducto(self, nuevo_producto):
         self.__idProducto = self.validar_idProducto(nuevo_producto)
 
     def validar_idProducto(self, idProducto):
@@ -146,12 +146,13 @@ class GestionProductos:
                 producto_data = datos[idProducto]
                 if 'nombre' in producto_data:
                     producto = ProductosDeAlmacen(**producto_data)
-                    print(f"\nID encontrado. - {producto_data['nombre']} - Marca: {producto_data['marca']} - Cantidad: {producto_data['cantidadStock']} unidades\n")
+                    print(f"\nID encontrado | {producto_data['nombre']} | Marca: {producto_data['marca']} | Cantidad: {producto_data['cantidadStock']} unidades |\n")
                 else:
                     producto = ProductosBebidas(**producto_data)
-                    print(f"\nID encontrado. - {producto_data['tipoDeBebida']} - Marca: {producto_data['marca']} - Cantidad: {producto_data['cantidadStock']} unidades\n")
+                    print(f"\nID encontrado | {producto_data['tipoDeBebida']} | Marca: {producto_data['marca']} | Cantidad: {producto_data['cantidadStock']} unidades |\n")
             else:
-                print(f'Producto no encontrado...')
+                print(f'\nProducto no encontrado...')
+                
                 
         except Exception as error:
             print(f'Error al buscar el producto: {error}')
@@ -174,35 +175,33 @@ class GestionProductos:
             if str(idProducto) in datos.keys():
                 datos[idProducto]['precio'] = precio
                 self.actualizar_inventario(datos)
-                print(f'Precio actualizado correctamente')
+                print(f'\nPrecio actualizado correctamente')
             else:
-                print(f'Producto no encontrado')
+                print(f'\nProducto no encontrado')
                 
         except IOError as error:
             print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
             
         except Exception as error:
             print(f'Error inesperado: {error}')
-            
 
-
-    '''
-    def actualizar_inventario(self, idProducto, cantidadStock):
+    
+    def actualizar_stock(self, idProducto, cantidadStock):
         try:
             datos = self.leer_inventario()
             if str(idProducto) in datos.keys():
                 datos[idProducto]['cantidadStock'] = cantidadStock
                 self.actualizar_inventario(datos)
-                print(f'Stock actualizado correctamente')
+                print(f'\nStock actualizado correctamente')
             else:
-                print(f'Producto no encontrado')
+                print(f'\nProducto no encontrado...')
                 
         except IOError as error:
             print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
             
         except Exception as error:
             print(f'Error inesperado: {error}')
-    '''
+    
     
     def nuevo_producto(self, producto):
         try:
@@ -211,9 +210,9 @@ class GestionProductos:
             if not str(idProducto) in datos.keys():
                 datos[idProducto] = producto.to_dict()
                 self.actualizar_inventario(datos)
-                print(f'Datos guardados correctamente')
+                print(f'\nDatos guardados correctamente')
             else:
-                print(f'El producto ya existe')
+                print(f'\nEl producto ya existe')
             
         except Exception as error:
             print(f'Error inesperado al crear colaborador: {error}')
@@ -225,9 +224,9 @@ class GestionProductos:
             if str(idProducto) in datos.keys():
                 del datos[idProducto]
                 self.actualizar_inventario(datos)
-                print(f'Producto eliminado correctamente.')
+                print(f'\nProducto eliminado correctamente.')
             else:
-                print(f'Producto no encontrado')
+                print(f'\nProducto no encontrado')
                 
         except IOError as error:
             print(f'Error al intentar eliminar los datos en {self.archivo}: {error}')

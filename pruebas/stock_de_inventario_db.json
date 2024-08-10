@@ -28,7 +28,7 @@
         "marca": "Coca-cola",
         "volumen": "1,5lt",
         "precio": 678.0,
-        "cantidadStock": 33,
+        "cantidadStock": 65,
         "nombre": "Gaseosa"
     },
     "60": {
@@ -62,5 +62,21 @@
         "precio": 25,
         "cantidadStock": 4,
         "tipoDeBebida": "Gaseosa"
+    },
+    "52": {
+        "idProducto": 52,
+        "marca": "Coca-cola",
+        "volumen": "2250ml",
+        "precio": 52,
+        "cantidadStock": 56,
+        "tipoDeBebida": "Gaseosa"
+    },
+    "15": {
+        "idProducto": 15,
+        "marca": "Marolio",
+        "volumen": "500gr",
+        "precio": 1000.0,
+        "cantidadStock": 50,
+        "nombre": "Ma\u00edz pisingallo"
     }
 }

@@ -44,13 +44,12 @@ def nuevo_producto(gestion, tipo_producto):
             tipoDeBebida = input('Ingrese que tipo de bebida es: ')
             producto = ProductosBebidas(idProducto, marca, volumen, precio, cantidadStock, tipoDeBebida)
         else:
-            print('Opción inválida...')
+            print('\nOpción inválida...')
             return
         
         
         gestion.nuevo_producto(producto)
-        
-        input('Presione Enter para continuar...')
+        input('\nPresione Enter para continuar...')
         
     except ValueError as error:
         print(f'Error: {error}')
@@ -61,24 +60,24 @@ def nuevo_producto(gestion, tipo_producto):
 def buscar_producto(gestion):
     idProducto = input('\nIngrese el ID del producto que desea buscar: ')
     gestion.leer_producto(idProducto)
-    input('Presione Enter para continuar...')
+    input('\nPresione Enter para continuar...')
 
 
 def actualizar_producto(gestion, tipo_producto):
     
     try:
-        idProducto = input('Ingrese el ID del producto a actualizar: ')
+        idProducto = input('\nIngrese el ID del producto a actualizar: ')
         
         if tipo_producto == '4':
             precio = float(input('Ingrese el precio nuevo: '))
             gestion.actualizar_precio(idProducto, precio)
-            input('Presione Enter para continuar...')
+            input('\nPresione Enter para continuar...')
         elif tipo_producto == '5':
             cantidadStock = int(input('Ingrese la cantidad en stock actualizada: '))
-            gestion.actualizar_inventario(idProducto, cantidadStock)
-            input('Presione Enter para continuar...')
+            gestion.actualizar_stock(idProducto, cantidadStock)
+            input('\nPresione Enter para continuar...')
         else:
-            print('Opción inválida...')
+            print('\nOpción inválida...')
             return
     
     except ValueError as error:
@@ -88,9 +87,9 @@ def actualizar_producto(gestion, tipo_producto):
     
 
 def eliminar_producto(gestion):
-    idProducto = input('Ingrese el ID del producto a eliminar: ')
+    idProducto = input('\nIngrese el ID del producto a eliminar: ')
     gestion.eliminar_producto(idProducto)
-    input('Presione Enter para continuar...')
+    input('\nPresione Enter para continuar...')
 
 def mostrar_todos_los_producto(gestion):
     print('-----------------------------------------------------------------------------------------')
@@ -127,7 +126,6 @@ if __name__ == '__main__':
             actualizar_producto(gestion_productos, opcion)
         
         elif opcion == '5':
-            ''' BRINDA ERROR DE POSICIONAMIENTO- no pude solucionarlo '''
             actualizar_producto(gestion_productos, opcion)
             
         elif opcion == '6':
@@ -137,7 +135,7 @@ if __name__ == '__main__':
             mostrar_todos_los_producto(gestion_productos)
             
         elif opcion == '0':
-            print('Saliendo del programa...')
+            print('\nSaliendo del programa...')
             break
         
         else:
