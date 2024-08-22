@@ -1,6 +1,10 @@
 
 import json
 
+import mysql.connector
+from mysql.connector import Error
+from decouple import config
+
 
 
 class Producto:
@@ -77,7 +81,6 @@ class Producto:
         return f"{self.idProducto} {self.volumen} {self.precio}"
     
     
-    
 class ProductosDeAlmacen(Producto):
     def __init__(self, idProducto, marca, volumen, precio, cantidadStock, nombre):
         super().__init__(idProducto, marca, volumen, precio, cantidadStock)
@@ -97,7 +100,6 @@ class ProductosDeAlmacen(Producto):
     
     def __str__(self):
         return f"{super().__str__()} {self.nombre}"
-    
     
  
 class ProductosBebidas(Producto):
@@ -121,11 +123,31 @@ class ProductosBebidas(Producto):
     
 
 
-
 class GestionProductos:
-    def __init__(self, archivo):
-        self.archivo = archivo
+    def __init__(self):
+        self.host = config('DB_HOST')
+        self.database = config('DB_NAME')
+        self.user = config('DB_USER')
+        self.password = config('DB_PASSWORD')
+        self.port = config('DB_PORT')
+           
+    def connect(self):
+        '''Estabelce conexion con la DB'''
+        try:
+            connection = mysql.connector.connect(
+                host=self.host,
+                database=self.database,
+                user=self.user,
+                password=self.password,
+                port=self.port
+            )
+            
+            if connection.is_connected():
+                return connection
         
+        except Error as e:
+            print(f"Error al conectar a la base de datos: {e}")
+            return None
 
     def leer_inventario(self):
         try:
@@ -141,21 +163,43 @@ class GestionProductos:
         
     def leer_producto(self, idProducto):
         try:
-            datos = self.leer_inventario()
-            if idProducto in datos:
-                producto_data = datos[idProducto]
-                if 'nombre' in producto_data:
-                    producto = ProductosDeAlmacen(**producto_data)
-                    print(f"\nID encontrado | {producto_data['nombre']} | Marca: {producto_data['marca']} | Cantidad: {producto_data['cantidadStock']} unidades |\n")
-                else:
-                    producto = ProductosBebidas(**producto_data)
-                    print(f"\nID encontrado | {producto_data['tipoDeBebida']} | Marca: {producto_data['marca']} | Cantidad: {producto_data['cantidadStock']} unidades |\n")
-            else:
-                print(f'\nProducto no encontrado...')
-                
-                
-        except Exception as error:
-            print(f'Error al buscar el producto: {error}')
+            connection = self.connect()
+            
+            if connection:
+                with connection.cursor(dictionary=True) as cursor:
+                    cursor.execute('SELECT * FROM producto WHERE idProducto = %s', (idProducto,))
+                    producto_data = cursor.fetchone()
+                    
+                    if producto_data:
+                        cursor.execute('SELECT nombre FROM productosdealmacen WHERE idProducto = %s', (idProducto,))
+                        nombre = cursor.fetchone()
+                        
+                        if nombre:
+                            producto_data['nombre'] = nombre['nombre']
+                            producto = ProductosDeAlmacen(**producto_data)
+                            
+                        else:
+                            cursor.execute('SELECT tipoDeBebida FROM productosbebidas WHERE idProducto = %s', (idProducto,))
+                            tipoBebida = cursor.fetchone()
+                            
+                            if tipoBebida:
+                                producto_data['tipoDeBebida'] = tipoBebida['tipoDeBebida']
+                                producto = ProductosBebidas(**producto_data)
+                            
+                            else:
+                                producto = Producto(**producto_data)
+                        
+                        print(f"\n\t   | ID {producto_data['idProducto']} encontrado | \n| Marca: {producto_data['marca']} | Cantidad: {producto_data['cantidadStock']} unidades |\n")
+                        
+                    else:
+                        print(f'\nProducto no encontrado con el ID: {idProducto}')
+        
+        except Error as e:
+            print(f'\Error al buscar el producto: {e}')
+        
+        finally:
+            if connection.is_connected():
+                connection.close()
     
     def actualizar_inventario(self, datos):
         try:
@@ -166,8 +210,7 @@ class GestionProductos:
             print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
             
         except Exception as error:
-            print(f'Error inesperado: {error}')
-            
+            print(f'Error inesperado: {error}')        
             
     def actualizar_precio(self, idProducto, precio):
         try:
@@ -184,8 +227,7 @@ class GestionProductos:
             
         except Exception as error:
             print(f'Error inesperado: {error}')
-
-    
+  
     def actualizar_stock(self, idProducto, cantidadStock):
         try:
             datos = self.leer_inventario()
@@ -200,24 +242,53 @@ class GestionProductos:
             print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
             
         except Exception as error:
-            print(f'Error inesperado: {error}')
-    
+            print(f'Error inesperado: {error}')   
     
     def nuevo_producto(self, producto):
         try:
-            datos = self.leer_inventario()
-            idProducto = producto.idProducto
-            if not str(idProducto) in datos.keys():
-                datos[idProducto] = producto.to_dict()
-                self.actualizar_inventario(datos)
-                print(f'\nDatos guardados correctamente')
-            else:
-                print(f'\nEl producto ya existe')
-            
+            connection = self.connect()
+            if connection:
+                with connection.cursor() as cursor:
+                    #Verifica si el Producto existe
+                    cursor.execute('SELECT idProducto FROM producto WHERE idProducto = %s', (producto.idProducto,))
+                    
+                    if cursor.fetchone():
+                        print(f'\nEl producto {producto.idProducto} ya existe')
+                        return
+                    
+                    # Insertar producto acorde al tipo
+                    if isinstance(producto, ProductosDeAlmacen):
+                        query = '''
+                        INSERT INTO producto (idProducto, marca, volumen, precio, cantidadStock)
+                        VALUES (%s, %s, %s, %s, %s)
+                        '''
+                        cursor.execute(query, (producto.idProducto, producto.marca, producto.volumen, producto. precio, producto.cantidadStock))
+                        
+                        query = '''
+                        INSERT INTO productosdealmacen (idProducto, nombre)
+                        VALUES (%s, %s)
+                        '''
+                        cursor.execute(query, (producto.idProducto, producto.nombre))
+
+                    elif isinstance(producto, ProductosBebidas):
+                        query = '''
+                        INSERT INTO producto (idProducto, marca, volumen, precio, cantidadStock)
+                        VALUES (%s, %s, %s, %s, %s)
+                        '''
+                        cursor.execute(query, (producto.idProducto, producto.marca, producto.volumen, producto. precio, producto.cantidadStock))
+                        
+                        query = '''
+                        INSERT INTO productosbebidas (idProducto, tipoDeBebida)
+                        VALUES (%s, %s)
+                        '''
+                        cursor.execute(query, (producto.idProducto, producto.tipoDeBebida))
+                        
+                    connection.commit()
+                    print(f'\nProducto ID: {producto.idProducto} - {producto.marca} creado correctamente')
+                    
         except Exception as error:
-            print(f'Error inesperado al crear colaborador: {error}')
-            
-            
+            print(f'\nError inesperado al crear producto: {error}')
+                 
     def eliminar_producto(self, idProducto):
         try:
             datos = self.leer_inventario()

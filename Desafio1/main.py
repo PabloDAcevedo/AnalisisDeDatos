@@ -31,7 +31,7 @@ def mostrar_menu():
 
 def nuevo_producto(gestion, tipo_producto):
     try:
-        idProducto = int(input('Ingrese el ID del producto: '))
+        idProducto = int(input('\nIngrese el ID del producto: '))
         marca = input('Ingrese la marca del producto: ')
         volumen = input('Ingrese las medidas del producto del producto: ')
         precio = float(input('Ingrese precio del producto: '))
@@ -93,7 +93,7 @@ def eliminar_producto(gestion):
 
 def mostrar_todos_los_producto(gestion):
     print('-----------------------------------------------------------------------------------------')
-    print('|                              Listado de los Productos:                                |')
+    print('|                              Listado de los Productos                                 |')
     print('-----------------------------------------------------------------------------------------')
     for producto in gestion.leer_inventario().values():
         if 'nombre' in producto:

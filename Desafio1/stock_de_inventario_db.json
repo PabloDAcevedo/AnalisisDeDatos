@@ -47,14 +47,6 @@
         "cantidadStock": 3,
         "nombre": "Aceite"
     },
-    "24": {
-        "idProducto": 24,
-        "marca": "Ferner vittone",
-        "volumen": "750ml",
-        "precio": 2100.0,
-        "cantidadStock": 5,
-        "nombre": "Ferne"
-    },
     "25": {
         "idProducto": 25,
         "marca": "Fanta",
@@ -78,5 +70,13 @@
         "precio": 1000.0,
         "cantidadStock": 50,
         "nombre": "Ma\u00edz pisingallo"
+    },
+    "16": {
+        "idProducto": 16,
+        "marca": "Ca\u00f1uelas",
+        "volumen": "1kg",
+        "precio": 850.0,
+        "cantidadStock": 8,
+        "nombre": "Harina"
     }
 }
