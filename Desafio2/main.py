@@ -58,7 +58,13 @@ def nuevo_producto(gestion, tipo_producto):
 
 def buscar_producto(gestion):
     idProducto = input('\nIngrese el ID del producto que desea buscar: ')
-    gestion.leer_producto(idProducto)
+    buscarID = gestion.leer_producto(idProducto)
+    
+    if buscarID == None:
+        print(f'\nNo se encontró el ID: "{idProducto}" de producto...')
+    else:
+        print(f'\n\t\t   | ID "{buscarID.idProducto}" encontrado | \n| Marca: {buscarID.marca} | Cantidad: {buscarID.cantidadStock} unidades | Precio: ${buscarID.precio} |\n')
+    
     input('\nPresione Enter para continuar...')
 
 def actualizar_producto(gestion, tipo_producto):
@@ -89,15 +95,22 @@ def eliminar_producto(gestion):
     input('\nPresione Enter para continuar...')
 
 def mostrar_todos_los_producto(gestion):
-    print('-----------------------------------------------------------------------------------------')
-    print('|                              Listado de los Productos                                 |')
-    print('-----------------------------------------------------------------------------------------')
-    for producto in gestion.leer_inventario().values():
-        if 'nombre' in producto:
-            print(f"|| {producto['nombre']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
-        else:
-            print(f"|| {producto['tipoDeBebida']} - Marca: {producto['marca']} - Cantidad: {producto['cantidadStock']} unidades")
-    print('-----------------------------------------------------------------------------------------\n')
+    print('---------------------------------------------------------------------------------------------------------')
+    print('|                                     Listado de los Productos                                          |')
+    print('---------------------------------------------------------------------------------------------------------')
+    try:
+        productos = gestion.leer_todos_los_productos()
+        
+        for producto in productos:
+            if isinstance(producto, ProductosDeAlmacen):
+                print(f'|\n|| ID: {producto.idProducto} - Nombre: {producto.nombre} - Marca: {producto.marca} - Cantidad: {producto.cantidadStock} unidades - Precio: ${producto.precio}')
+            elif isinstance(producto, ProductosBebidas):
+                print(f'|\n|| ID: {producto.idProducto} - Tipo De Bebida: {producto.tipoDeBebida} - Marca: {producto.marca} - Cantidad: {producto.cantidadStock} unidades - Precio: ${producto.precio}')
+    
+    except Exception as error:
+        print(f'Error inesperado: {error}')
+        
+    print('---------------------------------------------------------------------------------------------------------\n')
     input('Presione Enter para continuar...')
         
 

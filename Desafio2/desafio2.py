@@ -148,7 +148,7 @@ class GestionProductos:
         except Error as e:
             print(f"Error al conectar a la base de datos: {e}")
             return None
-
+    '''
     def leer_inventario(self):
         try:
             with open(self.archivo, 'r') as file:
@@ -160,6 +160,7 @@ class GestionProductos:
             raise Exception(f'Error al leer datos del archivo: {error}')
         else:
             return datos
+    '''
         
     def leer_producto(self, idProducto):
         try:
@@ -167,6 +168,7 @@ class GestionProductos:
             
             if connection:
                 with connection.cursor(dictionary=True) as cursor:
+                    
                     cursor.execute('SELECT * FROM producto WHERE idProducto = %s', (idProducto,))
                     producto_data = cursor.fetchone()
                     
@@ -188,19 +190,20 @@ class GestionProductos:
                             
                             else:
                                 producto = Producto(**producto_data)
-                        
-                        print(f"\n\t   | ID {producto_data['idProducto']} encontrado | \n| Marca: {producto_data['marca']} | Cantidad: {producto_data['cantidadStock']} unidades |\n")
-                        
+
                     else:
-                        print(f'\nProducto no encontrado con el ID: {idProducto}')
+                        producto = None 
         
         except Error as e:
             print(f'\Error al buscar el producto: {e}')
+            
+        else:
+            return producto
         
         finally:
             if connection.is_connected():
                 connection.close()
-    
+    '''
     def actualizar_inventario(self, datos):
         try:
             with open(self.archivo, 'w') as file:
@@ -211,47 +214,79 @@ class GestionProductos:
             
         except Exception as error:
             print(f'Error inesperado: {error}')        
-            
-    def actualizar_precio(self, idProducto, precio):
+    '''        
+    def actualizar_precio(self, idProducto, nuevo_precio):
         try:
-            datos = self.leer_inventario()
-            if str(idProducto) in datos.keys():
-                datos[idProducto]['precio'] = precio
-                self.actualizar_inventario(datos)
-                print(f'\nPrecio actualizado correctamente')
-            else:
-                print(f'\nProducto no encontrado')
+            connection = self.connect()
+            
+            if connection:
+                with connection.cursor() as cursor:
+                    
+                    # se verifica existencia de ID
+                    cursor.execute('SELECT * FROM producto WHERE idProducto = %s', (idProducto,))
+                    if not cursor.fetchone():
+                        print(f'No se encontro producto con ID: {idProducto}')
+                        return
+                    
+                    # se actualiza campo
+                    cursor.execute('UPDATE producto SET precio = %s WHERE idProducto = %s', (nuevo_precio, idProducto))
+                    
+                    if cursor.rowcount > 0:
+                        connection.commit()
+                        print(f'\n\t¡Precio actualizado con exito!')
+                    else:
+                        print(f'\t\n¡No se pudo actualizar el precio!')
                 
         except IOError as error:
-            print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
+            print(f'Error al intentar conectar a la base de datos: {error}')
             
         except Exception as error:
             print(f'Error inesperado: {error}')
+            
+        finally:
+            if connection.is_connected():
+                connection.close()
   
-    def actualizar_stock(self, idProducto, cantidadStock):
+    def actualizar_stock(self, idProducto, nuevo_stock):
         try:
-            datos = self.leer_inventario()
-            if str(idProducto) in datos.keys():
-                datos[idProducto]['cantidadStock'] = cantidadStock
-                self.actualizar_inventario(datos)
-                print(f'\nStock actualizado correctamente')
-            else:
-                print(f'\nProducto no encontrado...')
+            connection = self.connect()
+            
+            if connection:
+                with connection.cursor() as cursor:
+                    
+                    # se verifica existencia de ID
+                    cursor.execute('SELECT * FROM producto WHERE idProducto = %s', (idProducto,))
+                    if not cursor.fetchone():
+                        print(f'No se encontro producto con ID: {idProducto}')
+                        return
+                    
+                    # se actualiza campo
+                    cursor.execute('UPDATE producto SET cantidadStock = %s WHERE idProducto = %s', (nuevo_stock, idProducto))
+                    
+                    if cursor.rowcount > 0:
+                        connection.commit()
+                        print(f'\n\t¡Stock actualizado con exito!')
+                    else:
+                        print(f'\n\t¡No se pudo actualizar el Stock!')
                 
         except IOError as error:
-            print(f'Error al intentar guardar los datos en {self.archivo}: {error}')
+            print(f'Error al intentar conectar a la base de datos: {error}')
             
         except Exception as error:
-            print(f'Error inesperado: {error}')   
+            print(f'Error inesperado: {error}')
+            
+        finally:
+            if connection.is_connected():
+                connection.close()
     
     def nuevo_producto(self, producto):
         try:
             connection = self.connect()
             if connection:
                 with connection.cursor() as cursor:
+                    
                     #Verifica si el Producto existe
                     cursor.execute('SELECT idProducto FROM producto WHERE idProducto = %s', (producto.idProducto,))
-                    
                     if cursor.fetchone():
                         print(f'\nEl producto {producto.idProducto} ya existe')
                         return
@@ -284,23 +319,77 @@ class GestionProductos:
                         cursor.execute(query, (producto.idProducto, producto.tipoDeBebida))
                         
                     connection.commit()
-                    print(f'\nProducto ID: {producto.idProducto} - {producto.marca} creado correctamente')
+                    print(f'\nProducto ID: {producto.idProducto} - {producto.marca}  se ha creado correctamente')
                     
         except Exception as error:
             print(f'\nError inesperado al crear producto: {error}')
                  
     def eliminar_producto(self, idProducto):
         try:
-            datos = self.leer_inventario()
-            if str(idProducto) in datos.keys():
-                del datos[idProducto]
-                self.actualizar_inventario(datos)
-                print(f'\nProducto eliminado correctamente.')
-            else:
-                print(f'\nProducto no encontrado')
-                
-        except IOError as error:
-            print(f'Error al intentar eliminar los datos en {self.archivo}: {error}')
+            connection = self.connect()
+            
+            if connection:
+                with connection.cursor() as cursor:
+                    
+                    # se verifica existencia de ID
+                    cursor.execute('SELECT * FROM producto WHERE idProducto = %s', (idProducto,))
+                    if not cursor.fetchone():
+                        print(f'No se encontro producto con ID: {idProducto}')
+                        return
+                    
+                    # eliminar producto
+                    cursor.execute('DELETE FROM productosdealmacen WHERE idProducto = %s', (idProducto,))
+                    cursor.execute('DELETE FROM productosbebidas WHERE idProducto = %s', (idProducto,))
+                    cursor.execute('DELETE FROM producto WHERE idProducto = %s', (idProducto,))          
+                    
+                    if cursor.rowcount > 0:
+                        connection.commit()
+                        print(f'\nProducto ID: "{idProducto}" eliminado correctamente')
+                    else:
+                        print(f'\nNo se encontro producto con ID: "{idProducto}"')
+            
             
         except Exception as error:
-            print(f'Error inesperado: {error}')
+            print(f'\nError inesperado al eliminar producto: {error}')
+            
+        finally:
+            if connection.is_connected():
+                connection.close()
+                
+    def leer_todos_los_productos(self):
+        try:
+            connection = self.connect()
+            
+            if connection:
+                with connection.cursor(dictionary=True) as cursor:
+                    cursor.execute('SELECT * FROM producto')
+                    productos_data = cursor.fetchall()
+                    
+                    productos_dic = []
+                    
+                    for producto_data in productos_data:
+                        idProducto = producto_data['idProducto']
+                        
+                        cursor.execute('SELECT nombre FROM productosdealmacen WHERE idProducto = %s', (idProducto,))
+                        nombre = cursor.fetchone()
+                        
+                        if nombre:
+                            producto_data['nombre'] = nombre['nombre']
+                            producto = ProductosDeAlmacen(**producto_data)
+                        else:
+                            cursor.execute('SELECT tipoDeBebida FROM productosbebidas WHERE idProducto = %s', (idProducto,))
+                            tipoDeBebida = cursor.fetchone()
+                            producto_data['tipoDeBebida'] = tipoDeBebida['tipoDeBebida']
+                            producto = ProductosBebidas(**producto_data)
+                            
+                        productos_dic.append(producto)
+            
+        except Exception as error:
+            print(f'\nError inesperado al leer productos: {error}')
+            
+        else:
+            return productos_dic
+            
+        finally:
+            if connection.is_connected():
+                connection.close()
